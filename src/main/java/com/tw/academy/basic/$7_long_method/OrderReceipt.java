@@ -11,7 +11,9 @@ import java.util.List;
  */
 public class OrderReceipt {
     public static final double TAX_RATE_TEN_PERCENT = .10;
-    public static final double ZORO_PRICE = 0d;
+    public static final double ZERO_PRICE = 0d;
+    public static final String STRING_TAB = "\t";
+    public static final String STRING_NEW_LINE = "\n";
     private final Order order;
 
     public OrderReceipt(Order order) {
@@ -53,13 +55,13 @@ public class OrderReceipt {
     private String generateReceiptBody(StringBuilder header, List<LineItem> lineItemList) {
         return lineItemList.stream()
                 .map(lineItem -> new StringBuilder().append(lineItem.getDescription())
-                        .append(generateTab())
+                        .append(STRING_TAB)
                         .append(lineItem.getPrice())
-                        .append(generateTab())
+                        .append(STRING_TAB)
                         .append(lineItem.getQuantity())
-                        .append(generateTab())
+                        .append(STRING_TAB)
                         .append(lineItem.totalAmount())
-                        .append('\n')
+                        .append(STRING_NEW_LINE)
                 )
                 .reduce(header, StringBuilder::append)
                 .append(generateReceiptSalesTax(calculateTotalTax(lineItemList)))
@@ -71,7 +73,7 @@ public class OrderReceipt {
         return lineItemList.stream()
                 .map(LineItem::totalAmount)
                 .reduce(Double::sum)
-                .orElse(ZORO_PRICE);
+                .orElse(ZERO_PRICE);
     }
 
     private static double calculateTotalAmount(List<LineItem> lineItemList) {
@@ -80,9 +82,5 @@ public class OrderReceipt {
 
     private static double calculateTotalTax(List<LineItem> lineItemList) {
         return calculateTotalAmountWithoutTax(lineItemList) * TAX_RATE_TEN_PERCENT;
-    }
-
-    private static String generateTab() {
-        return "\t";
     }
 }
