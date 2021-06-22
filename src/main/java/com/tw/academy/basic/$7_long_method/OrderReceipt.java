@@ -23,8 +23,7 @@ public class OrderReceipt {
     public String printReceipt() {
         StringBuilder output = new StringBuilder();
 
-        // print headers
-        output.append("======Printing Orders======\n");
+        generateHeader(output);
 
         // print date, bill no, customer name
         output.append(order.getCustomerName());
@@ -57,5 +56,9 @@ public class OrderReceipt {
         // print total amount
         output.append("Total Amount").append('\t').append(tot);
         return output.toString();
+    }
+
+    private static void generateHeader(StringBuilder receipt) {
+        receipt.append("======Printing Orders======\n");
     }
 }
