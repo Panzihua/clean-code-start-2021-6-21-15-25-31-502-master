@@ -26,33 +26,33 @@ public class OrderReceipt {
     }
 
     public String generateReceipt() {
-        return generateReceiptBody(generateReceiptHeader(), order.getLineItems());
+        return generateReceiptHeader().append(generateReceiptBody(order.getLineItems())).toString();
     }
 
     private StringBuilder generateReceiptSalesTax(double totSalesTx) {
-        return new StringBuilder().append("Sales Tax").append('\t').append(totSalesTx);
+        return new StringBuilder().append("Sales Tax").append(STRING_TAB).append(totSalesTx);
     }
 
     private StringBuilder generateReceiptTotalAmount(double totalAmount) {
-        return new StringBuilder().append("Total Amount").append('\t').append(totalAmount);
+        return new StringBuilder().append("Total Amount").append(STRING_TAB).append(totalAmount);
     }
 
     private StringBuilder generateReceiptHeader() {
-        StringBuilder receiptContent = new StringBuilder();
-        receiptContent.append("======Printing Orders======\n");
-        generateReceiptCustomerName(receiptContent);
-        return generateReceiptCustomerAddress(receiptContent);
+        return new StringBuilder("======Printing Orders======")
+                .append(STRING_NEW_LINE)
+                .append(generateReceiptCustomerName())
+                .append(generateReceiptCustomerAddress());
     }
 
-    private void generateReceiptCustomerName(StringBuilder receiptContent) {
-        receiptContent.append(order.getCustomerName());
+    private String generateReceiptCustomerName() {
+        return order.getCustomerName();
     }
 
-    private StringBuilder generateReceiptCustomerAddress(StringBuilder receiptContent) {
-        return receiptContent.append(order.getCustomerAddress());
+    private String generateReceiptCustomerAddress() {
+        return order.getCustomerAddress();
     }
 
-    private String generateReceiptBody(StringBuilder header, List<LineItem> lineItemList) {
+    private StringBuilder generateReceiptBody(List<LineItem> lineItemList) {
         return lineItemList.stream()
                 .map(lineItem -> new StringBuilder().append(lineItem.getDescription())
                         .append(STRING_TAB)
@@ -63,10 +63,12 @@ public class OrderReceipt {
                         .append(lineItem.totalAmount())
                         .append(STRING_NEW_LINE)
                 )
-                .reduce(header, StringBuilder::append)
-                .append(generateReceiptSalesTax(calculateTotalTax(lineItemList)))
-                .append(generateReceiptTotalAmount(calculateTotalAmount(lineItemList)))
-                .toString();
+                .reduce(StringBuilder::append)
+                .map(lineItemListString ->
+                        lineItemListString.append(generateReceiptSalesTax(calculateTotalTax(lineItemList)))
+                        .append(generateReceiptTotalAmount(calculateTotalAmount(lineItemList)))
+                )
+                .orElse(new StringBuilder());
     }
 
     private static double calculateTotalAmountWithoutTax(List<LineItem> lineItemList) {
