@@ -11,6 +11,14 @@ public class Address {
         this.province = address.substring(0, address.indexOf("省"));
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
     public String getAddress() {
         return address;
     }
