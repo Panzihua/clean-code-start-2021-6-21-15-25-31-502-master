@@ -31,19 +31,22 @@ public class OrderReceipt {
         generateReceiptCustomerName(receiptContent);
         generateReceiptCustomerAddress(receiptContent);
 
-        // prints lineItems
         double totSalesTx = calculateTotalPrice(order.getLineItems()) * TAX_RATE_TEN_PERCENT;
         double tot = calculateTotalPrice(order.getLineItems()) + totSalesTx;
-        for (LineItem lineItem : order.getLineItems()) {
-            generateReceiptBody(receiptContent, lineItem);
-        }
 
-        // prints the state tax
-        receiptContent.append("Sales Tax").append('\t').append(totSalesTx);
+        generateReceiptBody(receiptContent, order.getLineItems());
+        generateReceiptSalesTax(receiptContent, totSalesTx);
+        generateReceiptTotalAmount(receiptContent, tot);
 
-        // print total amount
-        receiptContent.append("Total Amount").append('\t').append(tot);
         return receiptContent.toString();
+    }
+
+    private void generateReceiptSalesTax(StringBuilder receiptContent, double totSalesTx) {
+        receiptContent.append("Sales Tax").append('\t').append(totSalesTx);
+    }
+
+    private void generateReceiptTotalAmount(StringBuilder receiptContent, double totalAmount) {
+        receiptContent.append("Total Amount").append('\t').append(totalAmount);
     }
 
     private static void generateReceiptHeader(StringBuilder receiptContent) {
@@ -58,15 +61,19 @@ public class OrderReceipt {
         receiptContent.append(order.getCustomerAddress());
     }
 
-    private void generateReceiptBody(StringBuilder receiptContent, LineItem lineItem) {
-        receiptContent.append(lineItem.getDescription());
-        receiptContent.append('\t');
-        receiptContent.append(lineItem.getPrice());
-        receiptContent.append('\t');
-        receiptContent.append(lineItem.getQuantity());
-        receiptContent.append('\t');
-        receiptContent.append(lineItem.totalAmount());
-        receiptContent.append('\n');
+    private void generateReceiptBody(StringBuilder receiptContent, List<LineItem> lineItemList) {
+        lineItemList
+                .forEach(lineItem -> {
+                        receiptContent.append(lineItem.getDescription());
+                        receiptContent.append('\t');
+                        receiptContent.append(lineItem.getPrice());
+                        receiptContent.append('\t');
+                        receiptContent.append(lineItem.getQuantity());
+                        receiptContent.append('\t');
+                        receiptContent.append(lineItem.totalAmount());
+                        receiptContent.append('\n');
+                });
+
     }
 
     private static double calculateTotalPrice(List<LineItem> lineItemList) {
@@ -75,4 +82,6 @@ public class OrderReceipt {
                 .reduce(Double::sum)
                 .orElse(ZORO_PRICE);
     }
+
+
 }
