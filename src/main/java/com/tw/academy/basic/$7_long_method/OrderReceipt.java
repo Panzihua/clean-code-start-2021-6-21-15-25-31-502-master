@@ -21,26 +21,24 @@ public class OrderReceipt {
 
     //todo: rename -- Tom
     public String printReceipt() {
-        StringBuilder output = new StringBuilder();
+        StringBuilder receiptContent = new StringBuilder();
 
-        generateReceiptHeader(output);
-
-        // print date, bill no, customer name
-        generateReceiptCustomerName(output);
-        output.append(order.getCustomerAddress());
+        generateReceiptHeader(receiptContent);
+        generateReceiptCustomerName(receiptContent);
+        generateReceiptCustomerAddress(receiptContent);
 
         // prints lineItems
         double totSalesTx = 0d;
         double tot = 0d;
         for (LineItem lineItem : order.getLineItems()) {
-            output.append(lineItem.getDescription());
-            output.append('\t');
-            output.append(lineItem.getPrice());
-            output.append('\t');
-            output.append(lineItem.getQuantity());
-            output.append('\t');
-            output.append(lineItem.totalAmount());
-            output.append('\n');
+            receiptContent.append(lineItem.getDescription());
+            receiptContent.append('\t');
+            receiptContent.append(lineItem.getPrice());
+            receiptContent.append('\t');
+            receiptContent.append(lineItem.getQuantity());
+            receiptContent.append('\t');
+            receiptContent.append(lineItem.totalAmount());
+            receiptContent.append('\n');
 
             // calculate sales tax @ rate of 10%
             double salesTax = lineItem.totalAmount() * .10;
@@ -51,11 +49,11 @@ public class OrderReceipt {
         }
 
         // prints the state tax
-        output.append("Sales Tax").append('\t').append(totSalesTx);
+        receiptContent.append("Sales Tax").append('\t').append(totSalesTx);
 
         // print total amount
-        output.append("Total Amount").append('\t').append(tot);
-        return output.toString();
+        receiptContent.append("Total Amount").append('\t').append(tot);
+        return receiptContent.toString();
     }
 
     private static void generateReceiptHeader(StringBuilder receiptContent) {
@@ -64,5 +62,9 @@ public class OrderReceipt {
 
     private void generateReceiptCustomerName(StringBuilder receiptContent) {
         receiptContent.append(order.getCustomerName());
+    }
+
+    private void generateReceiptCustomerAddress(StringBuilder receiptContent) {
+        receiptContent.append(order.getCustomerAddress());
     }
 }
