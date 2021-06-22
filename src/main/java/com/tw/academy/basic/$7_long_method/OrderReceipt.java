@@ -23,10 +23,10 @@ public class OrderReceipt {
     public String printReceipt() {
         StringBuilder output = new StringBuilder();
 
-        generateHeader(output);
+        generateReceiptHeader(output);
 
         // print date, bill no, customer name
-        output.append(order.getCustomerName());
+        generateReceiptCustomerName(output);
         output.append(order.getCustomerAddress());
 
         // prints lineItems
@@ -58,7 +58,11 @@ public class OrderReceipt {
         return output.toString();
     }
 
-    private static void generateHeader(StringBuilder receipt) {
-        receipt.append("======Printing Orders======\n");
+    private static void generateReceiptHeader(StringBuilder receiptContent) {
+        receiptContent.append("======Printing Orders======\n");
+    }
+
+    private void generateReceiptCustomerName(StringBuilder receiptContent) {
+        receiptContent.append(order.getCustomerName());
     }
 }
