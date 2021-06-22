@@ -15,7 +15,7 @@ public class OrderReceipt {
         this.order = order;
     }
 
-    //Deprecated
+    @Deprecated
     public String printCustomerName() {
         return order.getCustomerName();
     }
