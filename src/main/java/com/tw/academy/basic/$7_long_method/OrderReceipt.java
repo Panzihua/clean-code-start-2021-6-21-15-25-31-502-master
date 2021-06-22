@@ -28,9 +28,6 @@ public class OrderReceipt {
         StringBuilder receiptContent = new StringBuilder();
 
         generateReceiptHeader(receiptContent);
-        generateReceiptCustomerName(receiptContent);
-        generateReceiptCustomerAddress(receiptContent);
-
         generateReceiptBody(receiptContent, order.getLineItems());
 
         return receiptContent.toString();
@@ -44,8 +41,10 @@ public class OrderReceipt {
         receiptContent.append("Total Amount").append('\t').append(totalAmount);
     }
 
-    private static void generateReceiptHeader(StringBuilder receiptContent) {
+    private void generateReceiptHeader(StringBuilder receiptContent) {
         receiptContent.append("======Printing Orders======\n");
+        generateReceiptCustomerName(receiptContent);
+        generateReceiptCustomerAddress(receiptContent);
     }
 
     private void generateReceiptCustomerName(StringBuilder receiptContent) {
