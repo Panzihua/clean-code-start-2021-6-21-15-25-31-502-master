@@ -2,18 +2,20 @@ package com.tw.academy.basic.$5_data_clumps;
 
 public class Order {
 
+    private User user;
     private int orderNumber;
 
-    private String buyerName;
+    private final String buyerName;
     private String buyerPhoneNumber;
     private String buyerAddress;
 
     public Order(int orderNumber, User user) {
         this.orderNumber = orderNumber;
 
-        this.buyerName = user.getBuyerName();
-        this.buyerPhoneNumber = user.getBuyerPhoneNumber();
-        this.buyerAddress = user.getBuyerAddress();
+        this.user = user;
+        this.buyerName = this.user.getBuyerName();
+        this.buyerPhoneNumber = this.user.getBuyerPhoneNumber();
+        this.buyerAddress = this.user.getBuyerAddress();
     }
 
     public String confirm(){
