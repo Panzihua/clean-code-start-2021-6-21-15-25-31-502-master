@@ -23,14 +23,8 @@ public class OrderReceipt {
         return order.getCustomerName();
     }
 
-    //todo: rename -- Tom
     public String generateReceipt() {
-        StringBuilder receiptContent = new StringBuilder();
-
-        generateReceiptHeader(receiptContent);
-        generateReceiptBody(receiptContent, order.getLineItems());
-
-        return receiptContent.toString();
+        return generateReceiptBody(generateReceiptHeader(), order.getLineItems());
     }
 
     private void generateReceiptSalesTax(StringBuilder receiptContent, double totSalesTx) {
@@ -41,35 +35,37 @@ public class OrderReceipt {
         receiptContent.append("Total Amount").append('\t').append(totalAmount);
     }
 
-    private void generateReceiptHeader(StringBuilder receiptContent) {
+    private StringBuilder generateReceiptHeader() {
+        StringBuilder receiptContent = new StringBuilder();
         receiptContent.append("======Printing Orders======\n");
         generateReceiptCustomerName(receiptContent);
-        generateReceiptCustomerAddress(receiptContent);
+        return generateReceiptCustomerAddress(receiptContent);
     }
 
     private void generateReceiptCustomerName(StringBuilder receiptContent) {
         receiptContent.append(order.getCustomerName());
     }
 
-    private void generateReceiptCustomerAddress(StringBuilder receiptContent) {
-        receiptContent.append(order.getCustomerAddress());
+    private StringBuilder generateReceiptCustomerAddress(StringBuilder receiptContent) {
+        return receiptContent.append(order.getCustomerAddress());
     }
 
-    private void generateReceiptBody(StringBuilder receiptContent, List<LineItem> lineItemList) {
+    private String generateReceiptBody(StringBuilder header, List<LineItem> lineItemList) {
         lineItemList
-                .forEach(lineItem -> {
-                        receiptContent.append(lineItem.getDescription());
-                        receiptContent.append('\t');
-                        receiptContent.append(lineItem.getPrice());
-                        receiptContent.append('\t');
-                        receiptContent.append(lineItem.getQuantity());
-                        receiptContent.append('\t');
-                        receiptContent.append(lineItem.totalAmount());
-                        receiptContent.append('\n');
-                });
+                .forEach(lineItem ->
+                        header.append(lineItem.getDescription())
+                        .append('\t')
+                        .append(lineItem.getPrice())
+                        .append('\t')
+                        .append(lineItem.getQuantity())
+                        .append('\t')
+                        .append(lineItem.totalAmount())
+                        .append('\n'));
 
-        generateReceiptSalesTax(receiptContent, calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
-        generateReceiptTotalAmount(receiptContent, calculateTotalPrice(lineItemList) + calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
+        generateReceiptSalesTax(header, calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
+        generateReceiptTotalAmount(header, calculateTotalPrice(lineItemList) + calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
+
+        return header.toString();
     }
 
     private static double calculateTotalPrice(List<LineItem> lineItemList) {
