@@ -1,5 +1,7 @@
 package com.tw.academy.basic.$7_long_method;
 
+import java.util.List;
+
 /**
  * This class is a example for bad smell;
  *
@@ -9,6 +11,7 @@ package com.tw.academy.basic.$7_long_method;
  */
 public class OrderReceipt {
     public static final double TAX_RATE_TEN_PERCENT = .10;
+    public static final double ZORO_PRICE = 0d;
     private final Order order;
 
     public OrderReceipt(Order order) {
@@ -29,17 +32,10 @@ public class OrderReceipt {
         generateReceiptCustomerAddress(receiptContent);
 
         // prints lineItems
-        double totSalesTx = 0d;
-        double tot = 0d;
+        double totSalesTx = calculateTotalPrice(order.getLineItems()) * TAX_RATE_TEN_PERCENT;
+        double tot = calculateTotalPrice(order.getLineItems()) + totSalesTx;
         for (LineItem lineItem : order.getLineItems()) {
             generateReceiptBody(receiptContent, lineItem);
-
-            // calculate sales tax @ rate of 10%
-            double salesTax = lineItem.totalAmount() * TAX_RATE_TEN_PERCENT;
-            totSalesTx += salesTax;
-
-            // calculate total amount of lineItem = price * quantity + 10 % sales tax
-            tot += lineItem.totalAmount() + salesTax;
         }
 
         // prints the state tax
@@ -71,5 +67,12 @@ public class OrderReceipt {
         receiptContent.append('\t');
         receiptContent.append(lineItem.totalAmount());
         receiptContent.append('\n');
+    }
+
+    private static double calculateTotalPrice(List<LineItem> lineItemList) {
+        return lineItemList.stream()
+                .map(LineItem::totalAmount)
+                .reduce(Double::sum)
+                .orElse(ZORO_PRICE);
     }
 }
