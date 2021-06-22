@@ -1,8 +1,8 @@
 package com.tw.academy.basic.$6_primitive_obsession.practiceOne;
 
 public class Address {
-    private String city;
-    private String province;
+    private final String city;
+    private final String province;
 
     public Address(String address) {
         this.city = address.substring(address.indexOf("省") + 1, address.indexOf("市"));
