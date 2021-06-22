@@ -31,12 +31,7 @@ public class OrderReceipt {
         generateReceiptCustomerName(receiptContent);
         generateReceiptCustomerAddress(receiptContent);
 
-        double totSalesTx = calculateTotalPrice(order.getLineItems()) * TAX_RATE_TEN_PERCENT;
-        double tot = calculateTotalPrice(order.getLineItems()) + totSalesTx;
-
         generateReceiptBody(receiptContent, order.getLineItems());
-        generateReceiptSalesTax(receiptContent, totSalesTx);
-        generateReceiptTotalAmount(receiptContent, tot);
 
         return receiptContent.toString();
     }
@@ -74,6 +69,8 @@ public class OrderReceipt {
                         receiptContent.append('\n');
                 });
 
+        generateReceiptSalesTax(receiptContent, calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
+        generateReceiptTotalAmount(receiptContent, calculateTotalPrice(lineItemList) + calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
     }
 
     private static double calculateTotalPrice(List<LineItem> lineItemList) {
