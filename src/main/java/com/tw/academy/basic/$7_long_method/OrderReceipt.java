@@ -8,6 +8,7 @@ package com.tw.academy.basic.$7_long_method;
  * @since   2018-1-1
  */
 public class OrderReceipt {
+    public static final double TAX_RATE_TEN_PERCENT = .10;
     private final Order order;
 
     public OrderReceipt(Order order) {
@@ -34,7 +35,7 @@ public class OrderReceipt {
             generateReceiptBody(receiptContent, lineItem);
 
             // calculate sales tax @ rate of 10%
-            double salesTax = lineItem.totalAmount() * .10;
+            double salesTax = lineItem.totalAmount() * TAX_RATE_TEN_PERCENT;
             totSalesTx += salesTax;
 
             // calculate total amount of lineItem = price * quantity + 10 % sales tax
