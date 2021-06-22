@@ -21,7 +21,7 @@ public class OrderReceipt {
     }
 
     //todo: rename -- Tom
-    public String printReceipt() {
+    public String generateReceipt() {
         StringBuilder receiptContent = new StringBuilder();
 
         generateReceiptHeader(receiptContent);
