@@ -27,12 +27,12 @@ public class OrderReceipt {
         return generateReceiptBody(generateReceiptHeader(), order.getLineItems());
     }
 
-    private void generateReceiptSalesTax(StringBuilder receiptContent, double totSalesTx) {
-        receiptContent.append("Sales Tax").append('\t').append(totSalesTx);
+    private StringBuilder generateReceiptSalesTax(double totSalesTx) {
+        return new StringBuilder().append("Sales Tax").append('\t').append(totSalesTx);
     }
 
-    private void generateReceiptTotalAmount(StringBuilder receiptContent, double totalAmount) {
-        receiptContent.append("Total Amount").append('\t').append(totalAmount);
+    private StringBuilder generateReceiptTotalAmount(double totalAmount) {
+        return new StringBuilder().append("Total Amount").append('\t').append(totalAmount);
     }
 
     private StringBuilder generateReceiptHeader() {
@@ -51,21 +51,20 @@ public class OrderReceipt {
     }
 
     private String generateReceiptBody(StringBuilder header, List<LineItem> lineItemList) {
-        lineItemList
-                .forEach(lineItem ->
-                        header.append(lineItem.getDescription())
+        return lineItemList.stream()
+                .map(lineItem -> new StringBuilder().append(lineItem.getDescription())
                         .append('\t')
                         .append(lineItem.getPrice())
                         .append('\t')
                         .append(lineItem.getQuantity())
                         .append('\t')
                         .append(lineItem.totalAmount())
-                        .append('\n'));
-
-        generateReceiptSalesTax(header, calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
-        generateReceiptTotalAmount(header, calculateTotalPrice(lineItemList) + calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT);
-
-        return header.toString();
+                        .append('\n')
+                )
+                .reduce(header, StringBuilder::append)
+                .append(generateReceiptSalesTax(calculateTotalTax(lineItemList)))
+                .append(generateReceiptTotalAmount(calculateTotalPrice(lineItemList) + calculateTotalTax(lineItemList)))
+                .toString();
     }
 
     private static double calculateTotalPrice(List<LineItem> lineItemList) {
@@ -73,6 +72,10 @@ public class OrderReceipt {
                 .map(LineItem::totalAmount)
                 .reduce(Double::sum)
                 .orElse(ZORO_PRICE);
+    }
+
+    private static double calculateTotalTax(List<LineItem> lineItemList) {
+        return calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT;
     }
 
 
