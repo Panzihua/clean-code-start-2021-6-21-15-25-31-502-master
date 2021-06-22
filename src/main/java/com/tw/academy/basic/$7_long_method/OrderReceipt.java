@@ -63,20 +63,26 @@ public class OrderReceipt {
                 )
                 .reduce(header, StringBuilder::append)
                 .append(generateReceiptSalesTax(calculateTotalTax(lineItemList)))
-                .append(generateReceiptTotalAmount(calculateTotalPrice(lineItemList) + calculateTotalTax(lineItemList)))
+                .append(generateReceiptTotalAmount(calculateTotalAmount(lineItemList)))
                 .toString();
     }
 
-    private static double calculateTotalPrice(List<LineItem> lineItemList) {
+    private static double calculateTotalAmountWithoutTax(List<LineItem> lineItemList) {
         return lineItemList.stream()
                 .map(LineItem::totalAmount)
                 .reduce(Double::sum)
                 .orElse(ZORO_PRICE);
     }
 
-    private static double calculateTotalTax(List<LineItem> lineItemList) {
-        return calculateTotalPrice(lineItemList) * TAX_RATE_TEN_PERCENT;
+    private static double calculateTotalAmount(List<LineItem> lineItemList) {
+        return calculateTotalAmountWithoutTax(lineItemList) + calculateTotalTax(lineItemList);
     }
 
+    private static double calculateTotalTax(List<LineItem> lineItemList) {
+        return calculateTotalAmountWithoutTax(lineItemList) * TAX_RATE_TEN_PERCENT;
+    }
 
+    private static String generateTab() {
+        return "\t";
+    }
 }
